@@ -3,11 +3,20 @@
 #include <U8g2lib.h>
 
 /* Constructor */
-U8G2_UC1701_DOGS102_1_4W_SW_SPI u8g2(U8G2_R0, /* clock=*/ 13, /* data=*/ 11, /* cs=*/ 10, /* dc=*/ 9, /* reset=*/ 8);
+U8G2_SSD1306_128X64_NONAME_F_4W_HW_SPI u8g2(
+  U8G2_R0,
+  /* cs=*/ 7,
+  /* dc=*/ A0,
+  /* reset=*/ 8);
 
-/* u8g2.begin() is required and will sent the setup/init sequence to the display */
+uint8_t *buf;
+
 void setup(void) {
-  u8g2.begin();
+  buf = (uint8_t *)malloc(u8g2.getBufferSize());
+  u8g2.setBufferPtr(buf);
+  u8g2.initDisplay();
+  u8g2.clearDisplay();
+  u8g2.setPowerSave(0);
 }
 
 /* draw something on the display with the `firstPage()`/`nextPage()` loop*/
@@ -17,5 +26,5 @@ void loop(void) {
     u8g2.setFont(u8g2_font_ncenB14_tr);
     u8g2.drawStr(0,20,"Hello World!");
   } while ( u8g2.nextPage() );
-  delay(1000);
+  delay(100);
 }

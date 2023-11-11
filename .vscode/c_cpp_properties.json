@@ -7,8 +7,8 @@
             "compilerArgs": [],
             "intelliSenseMode": "macos-clang-x64",
             "includePath": [
-                "/Users/auroragriffith/githubrepos/ENGG2000_T3_Comm_1/include/**",
-                "/Users/auroragriffith/githubrepos/ENGG2000_T3_Comm_1/**",
+                "/Users/auroragriffith/githubrepos/arduino_dnd_speller/include",
+                "/Users/auroragriffith/githubrepos/arduino_dnd_speller",
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Carbon.framework/Versions/A/Frameworks/Print.framework/Versions/A/Headers"
             ],
             "forcedInclude": [],
