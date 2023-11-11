@@ -15,3 +15,7 @@
 * arduino uno r3 until familiar with parts
 * would need to webscrape/rip the spell details
   - manually enter for minimal viable product
+
+
+##  changes/changelog/updates
+* `[11/11/2023]` --> *copied across files from engg2000 code for starting out*

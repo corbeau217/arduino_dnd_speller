@@ -1,0 +1,60 @@
+{
+  "todo-tree.highlights.useColourScheme": true,
+  "todo-tree.general.tags": [
+      "BUG",
+      "HACK",
+      "FIXME",
+      "TODO",
+      "XXX",
+      "[ ]",
+      "[x]",
+      "IDEA",
+      "ISSUE",
+      "NOTICE",
+      "LASTUPDATEDATE",
+      "LASTUPDATETIME",
+      "LASTUPDATEEPOCH",
+      "WARN",
+      "WARNING",
+      "NOTE",
+      "BIGTODO"
+  ],
+  "todo-tree.highlights.customHighlight": {
+  
+      "BIGTODO": {
+          "type": "text-and-comment",
+          "icon": "flame",
+          "foreground": "#ffffff",
+          "background": "#ff6b0f",
+          "iconColour": "#ff6b0f"
+      },
+      "TODO": {
+          "icon": "question",
+          "background": "#FF6347",
+          "iconColour": "#FF6347"
+      },
+      "IDEA": {
+          "icon": "hourglass",
+          "background": "#87CEFA",
+          "iconColour": "#87CEFA"
+      },
+      "NOTICE": {
+          "icon": "info",
+          "background": "#2E8B57",
+          "iconColour": "#2E8B57"
+      },
+      "BUG": {
+          "icon": "bug"
+      },
+      "HACK": {
+          "icon": "tools"
+      },
+      "FIXME": {
+          "icon": "flame"
+      },
+      "XXX": {
+          "icon": "$(close)"
+      }
+  },
+  "todo-tree.filtering.excludeGlobs": [],
+}

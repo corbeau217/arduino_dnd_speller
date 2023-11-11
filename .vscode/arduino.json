@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "programmer": "avrisp",
+    "port": "/dev/tty.usbmodem142401",
+    "sketch": "sketches/conglomeration_code/conglomeration_code.ino"
+}
