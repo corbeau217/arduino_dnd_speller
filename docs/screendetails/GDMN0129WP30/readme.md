@@ -26,7 +26,7 @@
 | ACCESSIBILITY | 1. OLED display power consumption measurement   2. OLED display working state detection |
 
 
-### notes 
+### notes the oled
 * `SSD1315` -- the driiver
 * still use it like `SSD1306` with 128 x 64
 * https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
@@ -37,3 +37,11 @@
     * `U8G2_R2` -- *180 degree clockwise rotation*
     * `U8G2_R3` -- *270 degree clockwise rotation*
     * `U8G2_MIRROR` -- *No rotation, landscape, display content is mirrored (v2.6.x)*
+
+### notes the atmega2560 + tft lcd
+* tft lcd screen 480x320 ili9486 atmega2560
+* https://forum.arduino.cc/t/ili9486-setup-with-arduino-mega-2560/1097098/13
+* their thiingy https://www.amazon.com/HiLetgo-Display-ILI9481-480X320-Mega2560/dp/B073R7Q8FF/ref=sr_1_4?crid=24S20QR5XAZ78&keywords=arduino+display&qid=1674767255&s=industrial&sprefix=arduino+dis%2Cindustrial%2C90&sr=1-4
+* suggested library http://www.rinkydinkelectronics.com/library.php?id=51
+* github find: https://github.com/rw3iss/Arduino-Coffee-Roaster/blob/e4a5dcf9fe68b3c30a0d0a6aa5670906f1da7a06/_docs/Arduino/Mega_Board_and_Others.md?plain=1#L69
+* there is another: https://github.com/ZinggJM/Arduino_GFX
