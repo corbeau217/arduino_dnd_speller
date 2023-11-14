@@ -12,109 +12,196 @@
  * 
  */
 
-
-
-// aughihrugheuirhgiauhgiuhrauighaiure
-
-// UTFT_Demo_480x320 
-// Copyright (C)2015 Rinky-Dink Electronics, Henning Karlsen. All right reserved
-// web: http://www.RinkyDinkElectronics.com/
-//
-// This program is a demo of how to use most of the functions
-// of the library with a supported display modules.
-//
-// This demo was made for modules with a screen resolution 
-// of 480x320 pixels.
-//
-// This program requires the UTFT library.
-//
-
-
-
-
 // #include <cstdint>
 #include <UTFT.h>
+
+
+
+#define BUTTON_PIN_UPWARD 4
+#define BUTTON_PIN_DOWNER 2
+#define BUTTON_PIN_LEFTER 3
+#define BUTTON_PIN_RIGHTR 5
+
+#define BUTTON_PIN_SELECT 6
+#define BUTTON_PIN_CANCEL 7
+
+#define TFTLCD_PIN_RS 38
+#define TFTLCD_PIN_WR 39
+#define TFTLCD_PIN_CS 40
+#define TFTLCD_PIN_RST 41
+
+#define LOOP_SNOOZE_TIME 10
+
+// screen instance thinger
+//  uses pins for the screen
+UTFT screenInstance(
+  ILI9486,
+  TFTLCD_PIN_RS,
+  TFTLCD_PIN_WR,
+  TFTLCD_PIN_CS,
+  TFTLCD_PIN_RST
+);
+
+// screen size stuff
+static const unsigned SCREEN_WIDTH = 480, SCREEN_HEIGHT = 320;
+
+// mouse positioning
+int mouseX = SCREEN_WIDTH/2, mouseY = SCREEN_HEIGHT/2;
+int prevMouseX = mouseX, prevMouseY = mouseY;
+
+#define MOUSEMODE_NONE 0
+#define MOUSEMODE_DRAW 1
+#define MOUSEMODE_CLEAR 2
+// mouse mode var
+int mouseMode = MOUSEMODE_NONE;
+int mouseModeSetter = MOUSEMODE_DRAW;
 
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
 
-// Set the pins to the correct ones for your development shield
-// ------------------------------------------------------------
-// Arduino Uno / 2009:
-// -------------------
-// Standard Arduino Uno/2009 shield            : <display model>,A5,A4,A3,A2
-// DisplayModule Arduino Uno TFT shield        : <display model>,A5,A4,A3,A2
-//
-// Arduino Mega:
-// -------------------
-// Standard Arduino Mega/Due shield            : <display model>,38,39,40,41
-// CTE TFT LCD/SD Shield for Arduino Mega      : <display model>,38,39,40,41
-//
-// Remember to change the model parameter to suit your display module!
-// UTFT myGLCD(ITDB32S,38,39,40,41);
-UTFT myGLCD(ILI9486,38,39,40,41);
+
+void fillGrider(){
+  doGrid(&screenInstance,10,10,0,255,65);
+  doGrid(&screenInstance,50,50,50,50,200);
+  doGrid(&screenInstance,100,100,255,0,0);
+}
+void setupLCD(){
+  // Setup the LCD
+  screenInstance.InitLCD();
+  screenInstance.setFont(SmallFont);
+
+  // Clear the screen and draw the frame
+  screenInstance.clrScr();
+
+  fillGrider();
+
+
+  screenInstance.setColor(200,200,200);
+}
+
+void setupButtons(){
+  // button modes
+  pinMode(BUTTON_PIN_UPWARD, INPUT_PULLUP);
+  pinMode(BUTTON_PIN_DOWNER, INPUT_PULLUP);
+  pinMode(BUTTON_PIN_LEFTER, INPUT_PULLUP);
+  pinMode(BUTTON_PIN_RIGHTR, INPUT_PULLUP);
+
+  pinMode(BUTTON_PIN_SELECT, INPUT_PULLUP);
+  pinMode(BUTTON_PIN_CANCEL, INPUT_PULLUP);
+}
 
 void setup()
 {
   randomSeed(analogRead(0));
   
-// Setup the LCD
-  myGLCD.InitLCD();
-  myGLCD.setFont(SmallFont);
+  setupLCD();
+  setupButtons();
+  // idk tbh
+  // setupInteraction();
 }
 
-void doGrid(UTFT *myGlcd, int xStep, int yStep, unsigned char r, unsigned char g, unsigned char b){
-  if(!myGlcd) return;
 
-  int widtherr = myGlcd->getDisplayXSize();
-  int heighter = myGlcd->getDisplayYSize();
+
+
+
+void doGrid(UTFT *screenInstance, int xStep, int yStep, unsigned char r, unsigned char g, unsigned char b){
+  int x, y;
+  int widtherr, heighter;
+
+  if(!screenInstance) return;
+
+  widtherr = SCREEN_WIDTH;
+  heighter = SCREEN_HEIGHT;
 
   // set color
-  myGlcd->setColor(r,g,b);
+  screenInstance->setColor(r,g,b);
 
-  for(int x = xStep-1; x < widtherr; x+=xStep){
-    myGlcd->drawLine(x, 0, x, heighter);
+  for(x = xStep-1; x < widtherr; x+=xStep){
+    screenInstance->drawLine(x, 0, x, heighter);
   }
 
-  for(int y = yStep-1; y < heighter; y+=yStep){
-    myGlcd->drawLine(0, y, widtherr, y);
+  for(y = yStep-1; y < heighter; y+=yStep){
+    screenInstance->drawLine(0, y, widtherr, y);
   }
+}
+
+
+
+
+void doButtonUpdate(){
+  if(digitalRead(BUTTON_PIN_UPWARD)==LOW){ mouseY--; }
+  if(digitalRead(BUTTON_PIN_DOWNER)==LOW){ mouseY++; }
+  if(digitalRead(BUTTON_PIN_LEFTER)==LOW){ mouseX--; }
+  if(digitalRead(BUTTON_PIN_RIGHTR)==LOW){ mouseX++; }
+
+
+  // BIGTODO: have a state cycle
+  if(digitalRead(BUTTON_PIN_SELECT)==LOW){
+    mouseMode = mouseModeSetter;
+  }
+  if(digitalRead(BUTTON_PIN_CANCEL)==LOW){
+    // mouseModeSetter = (mouseModeSetter==MOUSEMODE_CLEAR)? MOUSEMODE_DRAW : (mouseModeSetter==MOUSEMODE_DRAW)? MOUSEMODE_NONE : MOUSEMODE_CLEAR;
+    mouseModeSetter = (mouseModeSetter==MOUSEMODE_NONE)? MOUSEMODE_DRAW : MOUSEMODE_NONE;
+  }
+  // if(digitalRead(BUTTON_PIN_SELECT)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
+  // if(digitalRead(BUTTON_PIN_CANCEL)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
+}
+
+void doDrawingUpdate(){
+
+
+  if(mouseMode==MOUSEMODE_DRAW){
+    screenInstance.setColor(200,200,200);
+    screenInstance.drawPixel(mouseX,mouseY);
+    // screenInstance.drawLine(mouseX,mouseY,prevMouseX,prevMouseY);
+  }
+  
+
+  // update the previous positionss
+  prevMouseX = mouseX;
+  prevMouseY = mouseY;
 }
 
 void loop()
 {
 
+  doButtonUpdate();
 
-// Clear the screen and draw the frame
-  myGLCD.clrScr();
+  // if(mouseMode==MOUSEMODE_DRAW){
+    doDrawingUpdate();
+  // }
 
   // int xStep = 10;
   // int yStep = 10;
-  // int widtherr = myGLCD.getDisplayXSize();
-  // int heighter = myGLCD.getDisplayYSize();
+  // int widtherr = screenInstance.getDisplayXSize();
+  // int heighter = screenInstance.getDisplayYSize();
   // // bright green
-  // myGLCD.setColor(0,255,65);
+  // screenInstance.setColor(0,255,65);
   // for(int x = xStep-1; x < widtherr; x+=xStep){
-  //   myGLCD.drawLine(x, 0, x, heighter);
+  //   screenInstance.drawLine(x, 0, x, heighter);
   // }
 
   // // dark green
-  // myGLCD.setColor(0,143,17);
+  // screenInstance.setColor(0,143,17);
   // for(int y = yStep-1; y < heighter; y+=yStep){
-  //   myGLCD.drawLine(0, y, widtherr, y);
+  //   screenInstance.drawLine(0, y, widtherr, y);
   // }
 
   // screen is 480x320
 
-  doGrid(&myGLCD,10,10,0,255,65);
-  doGrid(&myGLCD,50,50,50,50,200);
-  doGrid(&myGLCD,100,100,255,0,0);
-
-  delay(2000);
 
 
-  doDemo();
 
+
+  // delay(2000);
+
+
+  // scammed
+  // doDemo();
+
+
+  // rn bc why not
+  delay(LOOP_SNOOZE_TIME);
 }
 
 void doDemo(){
@@ -125,62 +212,62 @@ void doDemo(){
 
 
 // Clear the screen and draw the frame
-  myGLCD.clrScr();
+  screenInstance.clrScr();
 
-  myGLCD.setColor(255, 0, 0);
-  myGLCD.fillRect(0, 0, 479, 13);
-  myGLCD.setColor(64, 64, 64);
-  myGLCD.fillRect(0, 306, 479, 319);
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.setBackColor(255, 0, 0);
-  myGLCD.print("* it's a thiinger thinger *", CENTER, 1);
-  myGLCD.setBackColor(64, 64, 64);
-  myGLCD.setColor(255,255,0);
-  myGLCD.print("why would we have a url here", CENTER, 307);
+  screenInstance.setColor(255, 0, 0);
+  screenInstance.fillRect(0, 0, 479, 13);
+  screenInstance.setColor(64, 64, 64);
+  screenInstance.fillRect(0, 306, 479, 319);
+  screenInstance.setColor(255, 255, 255);
+  screenInstance.setBackColor(255, 0, 0);
+  screenInstance.print("* it's a thiinger thinger *", CENTER, 1);
+  screenInstance.setBackColor(64, 64, 64);
+  screenInstance.setColor(255,255,0);
+  screenInstance.print("why would we have a url here", CENTER, 307);
 
-  myGLCD.setColor(0, 0, 255);
-  myGLCD.drawRect(0, 14, 479, 305);
+  screenInstance.setColor(0, 0, 255);
+  screenInstance.drawRect(0, 14, 479, 305);
 
 // Draw crosshairs
-  myGLCD.setColor(0, 0, 255);
-  myGLCD.setBackColor(0, 0, 0);
-  myGLCD.drawLine(239, 15, 239, 304);
-  myGLCD.drawLine(1, 159, 478, 159);
+  screenInstance.setColor(0, 0, 255);
+  screenInstance.setBackColor(0, 0, 0);
+  screenInstance.drawLine(239, 15, 239, 304);
+  screenInstance.drawLine(1, 159, 478, 159);
   for (int i=9; i<470; i+=10)
-    myGLCD.drawLine(i, 157, i, 161);
+    screenInstance.drawLine(i, 157, i, 161);
   for (int i=19; i<220; i+=10)
-    myGLCD.drawLine(237, i, 241, i);
+    screenInstance.drawLine(237, i, 241, i);
 
 // Draw sin-, cos- and tan-lines  
-  myGLCD.setColor(0,255,255);
-  myGLCD.print("Sin", 5, 15);
+  screenInstance.setColor(0,255,255);
+  screenInstance.print("Sin", 5, 15);
   for (int i=1; i<478; i++)
   {
-    myGLCD.drawPixel(i,159+(sin(((i*1.13)*3.14)/180)*95));
+    screenInstance.drawPixel(i,159+(sin(((i*1.13)*3.14)/180)*95));
   }
   
-  myGLCD.setColor(255,0,0);
-  myGLCD.print("Cos", 5, 27);
+  screenInstance.setColor(255,0,0);
+  screenInstance.print("Cos", 5, 27);
   for (int i=1; i<478; i++)
   {
-    myGLCD.drawPixel(i,159+(cos(((i*1.13)*3.14)/180)*95));
+    screenInstance.drawPixel(i,159+(cos(((i*1.13)*3.14)/180)*95));
   }
 
-  myGLCD.setColor(255,255,0);
-  myGLCD.print("Tan", 5, 39);
+  screenInstance.setColor(255,255,0);
+  screenInstance.print("Tan", 5, 39);
   for (int i=1; i<478; i++)
   {
-    myGLCD.drawPixel(i,159+(tan(((i*1.13)*3.14)/180)));
+    screenInstance.drawPixel(i,159+(tan(((i*1.13)*3.14)/180)));
   }
 
   delay(2000);
 
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
-  myGLCD.setColor(0, 0, 255);
-  myGLCD.setBackColor(0, 0, 0);
-  myGLCD.drawLine(239, 15, 239, 304);
-  myGLCD.drawLine(1, 159, 478, 159);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
+  screenInstance.setColor(0, 0, 255);
+  screenInstance.setBackColor(0, 0, 0);
+  screenInstance.drawLine(239, 15, 239, 304);
+  screenInstance.drawLine(1, 159, 478, 159);
 
 // Draw a moving sinewave
   x=1;
@@ -192,21 +279,21 @@ void doDemo(){
     if (i>479)
     {
       if ((x==239)||(buf[x-1]==159))
-        myGLCD.setColor(0,0,255);
+        screenInstance.setColor(0,0,255);
       else
-        myGLCD.setColor(0,0,0);
-      myGLCD.drawPixel(x,buf[x-1]);
+        screenInstance.setColor(0,0,0);
+      screenInstance.drawPixel(x,buf[x-1]);
     }
-    myGLCD.setColor(0,255,255);
+    screenInstance.setColor(0,255,255);
     y=159+(sin(((i*0.7)*3.14)/180)*(90-(i / 100)));
-    myGLCD.drawPixel(x,y);
+    screenInstance.drawPixel(x,y);
     buf[x-1]=y;
   }
 
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
 // Draw some filled rectangles
   for (int i=1; i<6; i++)
@@ -214,28 +301,28 @@ void doDemo(){
     switch (i)
     {
       case 1:
-        myGLCD.setColor(255,0,255);
+        screenInstance.setColor(255,0,255);
         break;
       case 2:
-        myGLCD.setColor(255,0,0);
+        screenInstance.setColor(255,0,0);
         break;
       case 3:
-        myGLCD.setColor(0,255,0);
+        screenInstance.setColor(0,255,0);
         break;
       case 4:
-        myGLCD.setColor(0,0,255);
+        screenInstance.setColor(0,0,255);
         break;
       case 5:
-        myGLCD.setColor(255,255,0);
+        screenInstance.setColor(255,255,0);
         break;
     }
-    myGLCD.fillRect(150+(i*20), 70+(i*20), 210+(i*20), 130+(i*20));
+    screenInstance.fillRect(150+(i*20), 70+(i*20), 210+(i*20), 130+(i*20));
   }
 
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
 // Draw some filled, rounded rectangles
   for (int i=1; i<6; i++)
@@ -243,28 +330,28 @@ void doDemo(){
     switch (i)
     {
       case 1:
-        myGLCD.setColor(255,0,255);
+        screenInstance.setColor(255,0,255);
         break;
       case 2:
-        myGLCD.setColor(255,0,0);
+        screenInstance.setColor(255,0,0);
         break;
       case 3:
-        myGLCD.setColor(0,255,0);
+        screenInstance.setColor(0,255,0);
         break;
       case 4:
-        myGLCD.setColor(0,0,255);
+        screenInstance.setColor(0,0,255);
         break;
       case 5:
-        myGLCD.setColor(255,255,0);
+        screenInstance.setColor(255,255,0);
         break;
     }
-    myGLCD.fillRoundRect(270-(i*20), 70+(i*20), 330-(i*20), 130+(i*20));
+    screenInstance.fillRoundRect(270-(i*20), 70+(i*20), 330-(i*20), 130+(i*20));
   }
   
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
 // Draw some filled circles
   for (int i=1; i<6; i++)
@@ -272,140 +359,140 @@ void doDemo(){
     switch (i)
     {
       case 1:
-        myGLCD.setColor(255,0,255);
+        screenInstance.setColor(255,0,255);
         break;
       case 2:
-        myGLCD.setColor(255,0,0);
+        screenInstance.setColor(255,0,0);
         break;
       case 3:
-        myGLCD.setColor(0,255,0);
+        screenInstance.setColor(0,255,0);
         break;
       case 4:
-        myGLCD.setColor(0,0,255);
+        screenInstance.setColor(0,0,255);
         break;
       case 5:
-        myGLCD.setColor(255,255,0);
+        screenInstance.setColor(255,255,0);
         break;
     }
-    myGLCD.fillCircle(180+(i*20),100+(i*20), 30);
+    screenInstance.fillCircle(180+(i*20),100+(i*20), 30);
   }
   
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
 // Draw some lines in a pattern
-  myGLCD.setColor (255,0,0);
+  screenInstance.setColor (255,0,0);
   for (int i=15; i<304; i+=5)
   {
-    myGLCD.drawLine(1, i, (i*1.6)-10, 304);
+    screenInstance.drawLine(1, i, (i*1.6)-10, 304);
   }
-  myGLCD.setColor (255,0,0);
+  screenInstance.setColor (255,0,0);
   for (int i=304; i>15; i-=5)
   {
-    myGLCD.drawLine(478, i, (i*1.6)-11, 15);
+    screenInstance.drawLine(478, i, (i*1.6)-11, 15);
   }
-  myGLCD.setColor (0,255,255);
+  screenInstance.setColor (0,255,255);
   for (int i=304; i>15; i-=5)
   {
-    myGLCD.drawLine(1, i, 491-(i*1.6), 15);
+    screenInstance.drawLine(1, i, 491-(i*1.6), 15);
   }
-  myGLCD.setColor (0,255,255);
+  screenInstance.setColor (0,255,255);
   for (int i=15; i<304; i+=5)
   {
-    myGLCD.drawLine(478, i, 490-(i*1.6), 304);
+    screenInstance.drawLine(478, i, 490-(i*1.6), 304);
   }
   
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
 // Draw some random circles
   for (int i=0; i<100; i++)
   {
-    myGLCD.setColor(random(255), random(255), random(255));
+    screenInstance.setColor(random(255), random(255), random(255));
     x=32+random(416);
     y=45+random(226);
     r=random(30);
-    myGLCD.drawCircle(x, y, r);
+    screenInstance.drawCircle(x, y, r);
   }
 
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
 // Draw some random rectangles
   for (int i=0; i<100; i++)
   {
-    myGLCD.setColor(random(255), random(255), random(255));
+    screenInstance.setColor(random(255), random(255), random(255));
     x=2+random(476);
     y=16+random(289);
     x2=2+random(476);
     y2=16+random(289);
-    myGLCD.drawRect(x, y, x2, y2);
+    screenInstance.drawRect(x, y, x2, y2);
   }
 
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
 // Draw some random rounded rectangles
   for (int i=0; i<100; i++)
   {
-    myGLCD.setColor(random(255), random(255), random(255));
+    screenInstance.setColor(random(255), random(255), random(255));
     x=2+random(476);
     y=16+random(289);
     x2=2+random(476);
     y2=16+random(289);
-    myGLCD.drawRoundRect(x, y, x2, y2);
+    screenInstance.drawRoundRect(x, y, x2, y2);
   }
 
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
   for (int i=0; i<100; i++)
   {
-    myGLCD.setColor(random(255), random(255), random(255));
+    screenInstance.setColor(random(255), random(255), random(255));
     x=2+random(476);
     y=16+random(289);
     x2=2+random(476);
     y2=16+random(289);
-    myGLCD.drawLine(x, y, x2, y2);
+    screenInstance.drawLine(x, y, x2, y2);
   }
 
   delay(2000);
   
-  myGLCD.setColor(0,0,0);
-  myGLCD.fillRect(1,15,478,304);
+  screenInstance.setColor(0,0,0);
+  screenInstance.fillRect(1,15,478,304);
 
   for (int i=0; i<10000; i++)
   {
-    myGLCD.setColor(random(255), random(255), random(255));
-    myGLCD.drawPixel(2+random(476), 16+random(289));
+    screenInstance.setColor(random(255), random(255), random(255));
+    screenInstance.drawPixel(2+random(476), 16+random(289));
   }
 
   delay(2000);
 
-  myGLCD.fillScr(0, 0, 255);
-  myGLCD.setColor(255, 0, 0);
-  myGLCD.fillRoundRect(160, 70, 319, 169); 
+  screenInstance.fillScr(0, 0, 255);
+  screenInstance.setColor(255, 0, 0);
+  screenInstance.fillRoundRect(160, 70, 319, 169); 
   
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.setBackColor(255, 0, 0);
-  myGLCD.print("That's it!", CENTER, 93);
-  myGLCD.print("Restarting in a", CENTER, 119);
-  myGLCD.print("few seconds...", CENTER, 132);
+  screenInstance.setColor(255, 255, 255);
+  screenInstance.setBackColor(255, 0, 0);
+  screenInstance.print("That's it!", CENTER, 93);
+  screenInstance.print("Restarting in a", CENTER, 119);
+  screenInstance.print("few seconds...", CENTER, 132);
   
-  myGLCD.setColor(0, 255, 0);
-  myGLCD.setBackColor(0, 0, 255);
-  myGLCD.print("Runtime: (msecs)", CENTER, 290);
-  myGLCD.printNumI(millis(), CENTER, 305);
+  screenInstance.setColor(0, 255, 0);
+  screenInstance.setBackColor(0, 0, 255);
+  screenInstance.print("Runtime: (msecs)", CENTER, 290);
+  screenInstance.printNumI(millis(), CENTER, 305);
   
   delay (10000);
 }
