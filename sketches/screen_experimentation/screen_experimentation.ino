@@ -1,3 +1,19 @@
+/**
+ * @file screen_experimentation.ino
+ * @author your name (you@domain.com)
+ * @version 0.1
+ * @date 2023-11-14
+ * 
+ * @brief UTFT library source: http://www.rinkydinkelectronics.com/library.php?id=51
+ * @brief URTOUCH library source: http://www.rinkydinkelectronics.com/library.php?id=92 // doesnt currently have touch
+ * @brief 
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
+
+
 // aughihrugheuirhgiauhgiuhrauighaiure
 
 // UTFT_Demo_480x320 
@@ -12,6 +28,9 @@
 //
 // This program requires the UTFT library.
 //
+
+
+
 
 // #include <cstdint>
 #include <UTFT.h>
@@ -375,7 +394,7 @@ void doDemo(){
 
   myGLCD.fillScr(0, 0, 255);
   myGLCD.setColor(255, 0, 0);
-  myGLCD.fillRoundRect(160, 70, 319, 169);
+  myGLCD.fillRoundRect(160, 70, 319, 169); 
   
   myGLCD.setColor(255, 255, 255);
   myGLCD.setBackColor(255, 0, 0);
