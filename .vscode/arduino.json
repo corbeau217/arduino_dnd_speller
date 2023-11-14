@@ -1,6 +1,7 @@
 {
-    "board": "arduino:avr:uno",
+    "board": "arduino:avr:mega",
     "programmer": "avrisp",
-    "port": "/dev/tty.usbmodem142401",
-    "sketch": "sketches/conglomeration_code/conglomeration_code.ino"
+    "port": "/dev/tty.usbserial-14240",
+    "sketch": "sketches/tftlcd_tester/tftlcd_tester.ino",
+    "configuration": "cpu=atmega2560"
 }
