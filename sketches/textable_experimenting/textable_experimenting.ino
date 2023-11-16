@@ -24,8 +24,8 @@
 #define BUTTON_PIN_LEFTER 3
 #define BUTTON_PIN_RIGHTR 5
 
-#define BUTTON_PIN_SELECT 6
-#define BUTTON_PIN_CANCEL 7
+#define BUTTON_PIN_A 6
+#define BUTTON_PIN_B 7
 
 #define TFTLCD_PIN_RS 38
 #define TFTLCD_PIN_WR 39
@@ -301,46 +301,88 @@ uint8_t BiggerFont[] = {
 
 
 
+#define DISPLAYING_CELAENA 0
+#define DISPLAYING_EMBER 1
+unsigned displayingCharacter = DISPLAYING_CELAENA;
+
 #define ABILITY_COUNT 6
 #define SKILL_COUNT 18
 
-String ABILITY_NAME_LIST[] = {
-  "Strength",
-  "Dexterity",
-  "Constitution",
-  "Intelligence",
-  "Wisdom",
-  "Charisma"
-};
+#define CELAENA_CHAR_NAME " CELAENA (lvl 5) "
 
-String SKILL_NAME_LIST[] = {
-  "Proficiency Bonus",
-  "Acrobatics",
-  "Animal Handling",
-  "Arcana",
-  "Athletics",
-  "Deception",
-  "History",
-  "Insight",
-  "Intimidation",
-  "Investigation",
-  "Medicine",
-  "Nature",
-  "Perception",
-  "Performance",
-  "Persuasion",
-  "Religion",
-  "Sleight of Hand",
-  "Stealth",
-  "Survival",
-  "Passive Perception"
-};
+#define CELAENA_ABILITY_TEXT_STR "[ 9] STR(-1)"
+#define CELAENA_ABILITY_TEXT_DEX "[16] DEX(+3)"
+#define CELAENA_ABILITY_TEXT_CON "[13] CON(+1)"
+#define CELAENA_ABILITY_TEXT_INT "[15] INT(+2)"
+#define CELAENA_ABILITY_TEXT_WIS "[12] WIS(+1)"
+#define CELAENA_ABILITY_TEXT_CHA "[18] CHA(+4)"
+
+// STR skills
+#define CELAENA_SKILL_TEXT_ATHLETICS     "       athletics  (-1)  " 
+
+// DEX skills
+#define CELAENA_SKILL_TEXT_ACROBATICS    "      acrobatics  (+3)  " 
+#define CELAENA_SKILL_TEXT_SLEIGHT       " sleight of hand  (+3)  " 
+#define CELAENA_SKILL_TEXT_STEALTH       "         stealth  (+3)  " 
+
+// INT skills
+#define CELAENA_SKILL_TEXT_ARCANA        "          arcana  (+2)  " 
+#define CELAENA_SKILL_TEXT_HISTORY       "         history  (+2)  " 
+#define CELAENA_SKILL_TEXT_INVESTIGATION "   investigation  (+5)* " // PROF
+#define CELAENA_SKILL_TEXT_NATURE        "          nature  (+5)* " // PROF
+#define CELAENA_SKILL_TEXT_RELIGION      "        religion  (+2)  " 
+
+// WIS skills
+#define CELAENA_SKILL_TEXT_ANIMAL        " animal handling  (+1)  " 
+#define CELAENA_SKILL_TEXT_INSIGHT       "         insight  (+1)  " 
+#define CELAENA_SKILL_TEXT_MEDICINE      "        medicine  (+1)  " 
+#define CELAENA_SKILL_TEXT_PERCEPTION    "      perception  (+4)* " // PROF
+#define CELAENA_SKILL_TEXT_SURVIVAL      "        survival  (+1)  " 
+
+// CHA skills
+#define CELAENA_SKILL_TEXT_DECEPTION     "       deception  (+7)* " // PROF
+#define CELAENA_SKILL_TEXT_INTIMIDATION  "    intimidation  (+4)  " 
+#define CELAENA_SKILL_TEXT_PERFORMANCE   "     performance  (+4)  " 
+#define CELAENA_SKILL_TEXT_PERSUASION    "      persuasion  (+4)  " 
 
 
+#define EMBER_CHAR_NAME "  EMBER (lvl 4)  "
 
-void setupAbilities(){
-  //...
-}
+#define EMBER_ABILITY_TEXT_STR   "[ 8] STR(-1)" 
+#define EMBER_ABILITY_TEXT_DEX   "[16] DEX(+3)" 
+#define EMBER_ABILITY_TEXT_CON   "[12] CON(+1)" 
+#define EMBER_ABILITY_TEXT_INT   "[17] INT(+3)" 
+#define EMBER_ABILITY_TEXT_WIS   "[18] WIS(+4)" 
+#define EMBER_ABILITY_TEXT_CHA   "[18] CHA(+4)" 
+
+// STR skills
+#define EMBER_SKILL_TEXT_ATHLETICS     "       athletics  (+1)* " // PROF
+
+// DEX skills
+#define EMBER_SKILL_TEXT_ACROBATICS    "      acrobatics  (+3)  " 
+#define EMBER_SKILL_TEXT_SLEIGHT       " sleight of hand  (+3)  " 
+#define EMBER_SKILL_TEXT_STEALTH       "         stealth  (+3)  " 
+
+// INT skills
+#define EMBER_SKILL_TEXT_ARCANA        "          arcana  (+5)* " // PROF
+#define EMBER_SKILL_TEXT_HISTORY       "         history  (+3)  " 
+#define EMBER_SKILL_TEXT_INVESTIGATION "   investigation  (+3)  " 
+#define EMBER_SKILL_TEXT_NATURE        "          nature  (+3)  " 
+#define EMBER_SKILL_TEXT_RELIGION      "        religion  (+3)  " 
+
+// WIS skills
+#define EMBER_SKILL_TEXT_ANIMAL        " animal handling  (+4)  " 
+#define EMBER_SKILL_TEXT_INSIGHT       "         insight  (+4)  " 
+#define EMBER_SKILL_TEXT_MEDICINE      "        medicine  (+4)  " 
+#define EMBER_SKILL_TEXT_PERCEPTION    "      perception  (+6)* " // PROF
+#define EMBER_SKILL_TEXT_SURVIVAL      "        survival  (+4)  " 
+
+// CHA skills
+#define EMBER_SKILL_TEXT_DECEPTION     "       deception  (+6)* " // PROF
+#define EMBER_SKILL_TEXT_INTIMIDATION  "    intimidation  (+4)  " 
+#define EMBER_SKILL_TEXT_PERFORMANCE   "     performance  (+4)  " 
+#define EMBER_SKILL_TEXT_PERSUASION    "      persuasion  (+4)  " 
+
 
 void fillGrider(){
   doGrid(&screenInstance,10,10,0,180,30);
@@ -371,8 +413,8 @@ void setupButtons(){
   pinMode(BUTTON_PIN_LEFTER, INPUT_PULLUP);
   pinMode(BUTTON_PIN_RIGHTR, INPUT_PULLUP);
 
-  pinMode(BUTTON_PIN_SELECT, INPUT_PULLUP);
-  pinMode(BUTTON_PIN_CANCEL, INPUT_PULLUP);
+  pinMode(BUTTON_PIN_A, INPUT_PULLUP);
+  pinMode(BUTTON_PIN_B, INPUT_PULLUP);
 }
 
 void setup()
@@ -381,8 +423,6 @@ void setup()
   
   setupLCD();
   setupButtons();
-  // idk tbh
-  // setupInteraction();
 }
 
 
@@ -410,22 +450,285 @@ void doGrid(UTFT *screenInstance, int xStep, int yStep, unsigned char r, unsigne
   }
 }
 
-void drawSkillList(){
+
+void drawSkillsAndAbilities(){
   int i = 0;
-  unsigned textHeight = 0;
-  unsigned textWidth = 0;
+  // uint8_t textHeightBig = 16;
+  // uint8_t textWidthBig = 16;
+  // uint8_t textHeightSmall = 12;
+  // uint8_t textWidthSmall = 8;
+  // uint8_t charCountAbility = 12;
+  // uint8_t charCountSkill = 17;
+
+  #define EMPTYABILITYSTRING "            "
+  #define EMPTYSKILLSTRING "                 "
+  #define X_MARGIN 1
+  #define ABILITYTEXT_HEIGHT 16
+  #define ABILITYTEXT_WIDTH 192
+  #define SKILLTEXT_HEIGHT 12
+  #define SKILLTEXT_WIDTH 204
+
+  #define ABILITYTEXT_X_POS 287 // SCREEN_WIDTH - ABILITYTEXT_WIDTH - XMARGIN
+  #define SKILLTEXT_X_POS 287 // SCREEN_WIDTH - SKILLTEXT_WIDTH - XMARGIN
+
+  #define TEXTBORDER_WEIGHT 1
+
   
+  #define TEXT_LEFTBORDER_POS 285 // SCREEN_WIDTH - MAX(ABILITYTEXT_WIDTH,SKILLTEXT_X_POS) - XMARGIN - XMARGIN - TEXTBORDER_WEIGHT
+
+  // BIGTODO maybe look into preprocessor math opers / macros so compile time positiioning with vars
+
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,0,TEXT_LEFTBORDER_POS,SCREEN_HEIGHT);
+  screenInstance.drawLine(479,0,479,SCREEN_HEIGHT);
+
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,0,SCREEN_WIDTH,0);
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,29,SCREEN_WIDTH,29);
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,82,SCREEN_WIDTH,82);
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,99,SCREEN_WIDTH,99);
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,176,SCREEN_WIDTH,176);
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,253,SCREEN_WIDTH,253);
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,318,SCREEN_WIDTH,318);
+  screenInstance.drawLine(TEXT_LEFTBORDER_POS,319,SCREEN_WIDTH,319);
+
+  // screenInstance.setColor()
+
+  screenInstance.setFont(BigFont);
+
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+
+  switch (displayingCharacter)
+  {
+  case DISPLAYING_CELAENA:
+    // ########################################################################
+    // ########################################################################
+    // NAME
+    screenInstance.print(CELAENA_CHAR_NAME,X_MARGIN,1); // 1 PX MARGIN
+
+    // ########################################################################
+    // ########################################################################
+    break;
+  case DISPLAYING_EMBER:
+    // ########################################################################
+    // ########################################################################
+    // NAME
+    screenInstance.print(EMBER_CHAR_NAME,X_MARGIN,1); // 1 PX MARGIN
+
+    // ########################################################################
+    // ########################################################################
+    break;
+  
+  default:
+    break;
+  }
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  
+
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+
+  switch (displayingCharacter)
+  {
+  case DISPLAYING_CELAENA:
+    // ########################################################################
+    // ########################################################################
+    // Y: 1
+    // STRENGTH
+    screenInstance.print(CELAENA_ABILITY_TEXT_STR,ABILITYTEXT_X_POS,1); // 1 PX MARGIN
+
+    // Y: 30
+    // DEXERITY
+    screenInstance.print(CELAENA_ABILITY_TEXT_DEX,ABILITYTEXT_X_POS,30); // +HEIGHTABILITY(16) +HEIGHTSKILLS(12) +PADDING(1)
+
+    // Y: 83
+    // CONSTITUTION
+    screenInstance.print(CELAENA_ABILITY_TEXT_CON,ABILITYTEXT_X_POS,83); // +HEIGHTABILITY(16) +HEIGHTSKILLS(3*12) +PADDING(1)
+    
+    // Y: 100
+    // INTELLIGENCE
+    screenInstance.print(CELAENA_ABILITY_TEXT_INT,ABILITYTEXT_X_POS,100); // +HEIGHTABILITY(16) +HEIGHTSKILLS(0*12) +PADDING(1)
+    
+    // Y: 177
+    // WISDOM
+    screenInstance.print(CELAENA_ABILITY_TEXT_WIS,ABILITYTEXT_X_POS,177); // +HEIGHTABILITY(16) +HEIGHTSKILLS(5*12) +PADDING(1)
+    
+    // Y: 254
+    // CHARISMA
+    screenInstance.print(CELAENA_ABILITY_TEXT_CHA,ABILITYTEXT_X_POS,254); // +HEIGHTABILITY(16) +HEIGHTSKILLS(5*12) +PADDING(1)
+    // ########################################################################
+    // ########################################################################
+    break;
+  case DISPLAYING_EMBER:
+    // ########################################################################
+    // ########################################################################
+    // Y: 1
+    // STRENGTH
+    screenInstance.print(EMBER_ABILITY_TEXT_STR,ABILITYTEXT_X_POS,1); // 1 PX MARGIN
+
+    // Y: 30
+    // DEXERITY
+    screenInstance.print(EMBER_ABILITY_TEXT_DEX,ABILITYTEXT_X_POS,30); // +HEIGHTABILITY(16) +HEIGHTSKILLS(12) +PADDING(1)
+
+    // Y: 83
+    // CONSTITUTION
+    screenInstance.print(EMBER_ABILITY_TEXT_CON,ABILITYTEXT_X_POS,83); // +HEIGHTABILITY(16) +HEIGHTSKILLS(3*12) +PADDING(1)
+    
+    // Y: 100
+    // INTELLIGENCE
+    screenInstance.print(EMBER_ABILITY_TEXT_INT,ABILITYTEXT_X_POS,100); // +HEIGHTABILITY(16) +HEIGHTSKILLS(0*12) +PADDING(1)
+    
+    // Y: 177
+    // WISDOM
+    screenInstance.print(EMBER_ABILITY_TEXT_WIS,ABILITYTEXT_X_POS,177); // +HEIGHTABILITY(16) +HEIGHTSKILLS(5*12) +PADDING(1)
+    
+    // Y: 254
+    // CHARISMA
+    screenInstance.print(EMBER_ABILITY_TEXT_CHA,ABILITYTEXT_X_POS,254); // +HEIGHTABILITY(16) +HEIGHTSKILLS(5*12) +PADDING(1)
+    // ########################################################################
+    // ########################################################################
+    break;
+  
+  default:
+    break;
+  }
+
+
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  
+
+  // --------------------------------------------------------
+  // --------------------------------------------------------
+
   screenInstance.setFont(SmallFont);
 
-  textHeight = screenInstance.getFontYsize();
-  textWidth = screenInstance.getFontXsize();
 
-  for(i = 0; i < SKILL_COUNT; i++){
-    // draw the text bits
-    screenInstance.print(SKILL_NAME_LIST[i],RIGHT,i*textHeight, 0);
-  }
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+
+  switch (displayingCharacter)
+  {
+  case DISPLAYING_CELAENA:
+    // ########################################################################
+    // ########################################################################
+    // Y: 1
+    // STRENGTH SKILLS: 1
+    // Y: 1 + 16: 17
+    screenInstance.print(CELAENA_SKILL_TEXT_ATHLETICS,SKILLTEXT_X_POS,17);
+
+    // Y: 30
+    // DEXERITY SKILLS: 3
+    // Y: 30 + 16: 46
+    screenInstance.print(CELAENA_SKILL_TEXT_ACROBATICS,SKILLTEXT_X_POS,46);
+    screenInstance.print(CELAENA_SKILL_TEXT_SLEIGHT,SKILLTEXT_X_POS,58); // 46+12
+    screenInstance.print(CELAENA_SKILL_TEXT_STEALTH,SKILLTEXT_X_POS,70); // 46+24
+
+    // Y: 83
+    // CONSTITUTION SKILLS: 0
+    // Y: 83 + 16: 99
+    
+    // Y: 100
+    // INTELLIGENCE SKILLS: 5
+    // Y: 100 + 16: 116
+    screenInstance.print(CELAENA_SKILL_TEXT_ARCANA,SKILLTEXT_X_POS,116);
+    screenInstance.print(CELAENA_SKILL_TEXT_HISTORY,SKILLTEXT_X_POS,128); // 116+12
+    screenInstance.print(CELAENA_SKILL_TEXT_INVESTIGATION,SKILLTEXT_X_POS,140); // 116+24
+    screenInstance.print(CELAENA_SKILL_TEXT_NATURE,SKILLTEXT_X_POS,152); // 116+36
+    screenInstance.print(CELAENA_SKILL_TEXT_RELIGION,SKILLTEXT_X_POS,164); // 116+48
+    
+    // Y: 177
+    // WISDOM SKILLS: 5
+    // Y: 177 + 16: 193
+    screenInstance.print(CELAENA_SKILL_TEXT_ANIMAL,SKILLTEXT_X_POS,193);
+    screenInstance.print(CELAENA_SKILL_TEXT_INSIGHT,SKILLTEXT_X_POS,205); // 193+12
+    screenInstance.print(CELAENA_SKILL_TEXT_MEDICINE,SKILLTEXT_X_POS,217); // 193+24
+    screenInstance.print(CELAENA_SKILL_TEXT_PERCEPTION,SKILLTEXT_X_POS,229); // 193+36
+    screenInstance.print(CELAENA_SKILL_TEXT_SURVIVAL,SKILLTEXT_X_POS,241); // 193+48
+    
+    // Y: 254
+    // CHARISMA SKILLS: 4
+    // Y: 254 + 16: 270
+    screenInstance.print(CELAENA_SKILL_TEXT_DECEPTION,SKILLTEXT_X_POS,270);
+    screenInstance.print(CELAENA_SKILL_TEXT_INTIMIDATION,SKILLTEXT_X_POS,282); // 270+12
+    screenInstance.print(CELAENA_SKILL_TEXT_PERFORMANCE,SKILLTEXT_X_POS,294); // 270+24
+    screenInstance.print(CELAENA_SKILL_TEXT_PERSUASION,SKILLTEXT_X_POS,306); // 270+36
+    // ########################################################################
+    // ########################################################################
+    break;
+  case DISPLAYING_EMBER:
+    // ########################################################################
+    // ########################################################################
+    // Y: 1
+    // STRENGTH SKILLS: 1
+    // Y: 1 + 16: 17
+    screenInstance.print(EMBER_SKILL_TEXT_ATHLETICS,SKILLTEXT_X_POS,17);
+
+    // Y: 30
+    // DEXERITY SKILLS: 3
+    // Y: 30 + 16: 46
+    screenInstance.print(EMBER_SKILL_TEXT_ACROBATICS,SKILLTEXT_X_POS,46);
+    screenInstance.print(EMBER_SKILL_TEXT_SLEIGHT,SKILLTEXT_X_POS,58); // 46+12
+    screenInstance.print(EMBER_SKILL_TEXT_STEALTH,SKILLTEXT_X_POS,70); // 46+24
+
+    // Y: 83
+    // CONSTITUTION SKILLS: 0
+    // Y: 83 + 16: 99
+    
+    // Y: 100
+    // INTELLIGENCE SKILLS: 5
+    // Y: 100 + 16: 116
+    screenInstance.print(EMBER_SKILL_TEXT_ARCANA,SKILLTEXT_X_POS,116);
+    screenInstance.print(EMBER_SKILL_TEXT_HISTORY,SKILLTEXT_X_POS,128); // 116+12
+    screenInstance.print(EMBER_SKILL_TEXT_INVESTIGATION,SKILLTEXT_X_POS,140); // 116+24
+    screenInstance.print(EMBER_SKILL_TEXT_NATURE,SKILLTEXT_X_POS,152); // 116+36
+    screenInstance.print(EMBER_SKILL_TEXT_RELIGION,SKILLTEXT_X_POS,164); // 116+48
+    
+    // Y: 177
+    // WISDOM SKILLS: 5
+    // Y: 177 + 16: 193
+    screenInstance.print(EMBER_SKILL_TEXT_ANIMAL,SKILLTEXT_X_POS,193);
+    screenInstance.print(EMBER_SKILL_TEXT_INSIGHT,SKILLTEXT_X_POS,205); // 193+12
+    screenInstance.print(EMBER_SKILL_TEXT_MEDICINE,SKILLTEXT_X_POS,217); // 193+24
+    screenInstance.print(EMBER_SKILL_TEXT_PERCEPTION,SKILLTEXT_X_POS,229); // 193+36
+    screenInstance.print(EMBER_SKILL_TEXT_SURVIVAL,SKILLTEXT_X_POS,241); // 193+48
+    
+    // Y: 254
+    // CHARISMA SKILLS: 4
+    // Y: 254 + 16: 270
+    screenInstance.print(EMBER_SKILL_TEXT_DECEPTION,SKILLTEXT_X_POS,270);
+    screenInstance.print(EMBER_SKILL_TEXT_INTIMIDATION,SKILLTEXT_X_POS,282); // 270+12
+    screenInstance.print(EMBER_SKILL_TEXT_PERFORMANCE,SKILLTEXT_X_POS,294); // 270+24
+    screenInstance.print(EMBER_SKILL_TEXT_PERSUASION,SKILLTEXT_X_POS,306); // 270+36
+    // ########################################################################
+    // ########################################################################
+    break;
   
-  // screenInstance.setFont(SmallFont);
+  default:
+    break;
+  }
+
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+  // ******************************************************************************************************************
+
+
+
+  
+  // 17 chars for skills
+  // 12 for abilities
+
+
+  // drawSkillList_old();
+  // drawAbilityList_old();
+  
+
+
 }
 
 unsigned char asciiValueOfHexDigit(unsigned char input){
@@ -486,37 +789,6 @@ void drawFontData(){
   screenInstance.print(charStringArr, CENTER, SCREEN_HEIGHT-(TEXT_HEIGHT*2), 0);
 }
 
-void drawAbilityList(){
-  unsigned i = 0;
-  
-  unsigned textHeight = 0;
-  unsigned textWidth = 0;
-
-
-
-  // (screenInstance.getFont())
-  // uint8_t* font
-  // screenInstance.getFontXsize()
-  // screenInstance.getFontYsize()
-  // screenInstance.setFont(SmallFont);
-
-  
-  // screenInstance.setFont(BigFont);
-
-
-
-  textHeight = screenInstance.getFontYsize();
-  textWidth = screenInstance.getFontXsize();
-
-  for(i = 0; i < ABILITY_COUNT; i++){
-    // draw the text bits
-    screenInstance.print(ABILITY_NAME_LIST[i],LEFT,i*textHeight, 0);
-  }
-  
-
-  // screenInstance.setFont(SmallFont);
-}
-
 
 void doButtonUpdate(){
   if(digitalRead(BUTTON_PIN_UPWARD)==LOW){ mouseY--; }
@@ -526,14 +798,16 @@ void doButtonUpdate(){
 
 
   // BIGTODO: have a state cycle
-  if(digitalRead(BUTTON_PIN_SELECT)==LOW){
-    mouseMode = MOUSEMODE_DRAW;
+  if(digitalRead(BUTTON_PIN_A)==LOW){
+    // mouseMode = MOUSEMODE_DRAW;
+    displayingCharacter = DISPLAYING_CELAENA;
   }
-  if(digitalRead(BUTTON_PIN_CANCEL)==LOW){
-    mouseMode = MOUSEMODE_NONE;
+  if(digitalRead(BUTTON_PIN_B)==LOW){
+    // mouseMode = MOUSEMODE_NONE;
+    displayingCharacter = DISPLAYING_EMBER;
   }
-  // if(digitalRead(BUTTON_PIN_SELECT)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
-  // if(digitalRead(BUTTON_PIN_CANCEL)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
+  // if(digitalRead(BUTTON_PIN_A)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
+  // if(digitalRead(BUTTON_PIN_B)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
 }
 
 void doDrawingUpdate(){
@@ -554,12 +828,11 @@ void loop()
 
   doDrawingUpdate();
 
-  drawSkillList();
-  drawAbilityList();
+  drawSkillsAndAbilities();
 
   drawFontData();
   // rn bc why not
-  delay(LOOP_SNOOZE_TIME);
+  // delay(LOOP_SNOOZE_TIME);
 }
 
 void doDemo(){
