@@ -384,6 +384,8 @@ unsigned displayingCharacter = DISPLAYING_CELAENA;
 #define EMBER_SKILL_TEXT_PERSUASION    "      persuasion  (+4)  " 
 
 
+bool requiresRedraw = true;
+
 void fillGrider(){
   doGrid(&screenInstance,10,10,0,180,30);
   doGrid(&screenInstance,50,50,25,25,100);
@@ -474,21 +476,33 @@ void drawSkillsAndAbilities(){
   #define TEXTBORDER_WEIGHT 1
 
   
-  #define TEXT_LEFTBORDER_POS 285 // SCREEN_WIDTH - MAX(ABILITYTEXT_WIDTH,SKILLTEXT_X_POS) - XMARGIN - XMARGIN - TEXTBORDER_WEIGHT
+  #define SKILLSANDABILITIES_TEXT_LEFTBORDER_POS 286 // SCREEN_WIDTH - MAX(ABILITYTEXT_WIDTH,SKILLTEXT_X_POS) - XMARGIN - TEXTBORDER_WEIGHT
+
+  #define NAME_TEXT_MARGIN 5
+  #define NAME_TEXT_BOX_HEIGHT 28
 
   // BIGTODO maybe look into preprocessor math opers / macros so compile time positiioning with vars
 
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,0,TEXT_LEFTBORDER_POS,SCREEN_HEIGHT);
+  // BORDERS AROUND THE NAME
+  screenInstance.setColor(0x00,0x00,0x00);
+  screenInstance.fillRect(0,0,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,NAME_TEXT_BOX_HEIGHT+1);
+  screenInstance.setColor(0xff,0xff,0xff);
+  screenInstance.drawLine(0,0,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,0);
+  screenInstance.drawLine(0,NAME_TEXT_BOX_HEIGHT+1,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,NAME_TEXT_BOX_HEIGHT+1);
+
+  // BORDERS AROUND THE ABILITIES/SKILLS
+
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,0,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,SCREEN_HEIGHT);
   screenInstance.drawLine(479,0,479,SCREEN_HEIGHT);
 
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,0,SCREEN_WIDTH,0);
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,29,SCREEN_WIDTH,29);
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,82,SCREEN_WIDTH,82);
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,99,SCREEN_WIDTH,99);
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,176,SCREEN_WIDTH,176);
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,253,SCREEN_WIDTH,253);
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,318,SCREEN_WIDTH,318);
-  screenInstance.drawLine(TEXT_LEFTBORDER_POS,319,SCREEN_WIDTH,319);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,0,SCREEN_WIDTH,0);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,29,SCREEN_WIDTH,29);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,82,SCREEN_WIDTH,82);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,99,SCREEN_WIDTH,99);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,176,SCREEN_WIDTH,176);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,253,SCREEN_WIDTH,253);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,318,SCREEN_WIDTH,318);
+  screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,319,SCREEN_WIDTH,319);
 
   // screenInstance.setColor()
 
@@ -503,8 +517,9 @@ void drawSkillsAndAbilities(){
   case DISPLAYING_CELAENA:
     // ########################################################################
     // ########################################################################
-    // NAME
-    screenInstance.print(CELAENA_CHAR_NAME,X_MARGIN,1); // 1 PX MARGIN
+    // x: TEXTBORDER_WEIGHT + NAME_TEXT_MARGIN
+    // y: TEXTBORDER_WEIGHT + NAME_TEXT_MARGIN
+    screenInstance.print(CELAENA_CHAR_NAME,6,6); // 1 PX MARGIN
 
     // ########################################################################
     // ########################################################################
@@ -512,8 +527,9 @@ void drawSkillsAndAbilities(){
   case DISPLAYING_EMBER:
     // ########################################################################
     // ########################################################################
-    // NAME
-    screenInstance.print(EMBER_CHAR_NAME,X_MARGIN,1); // 1 PX MARGIN
+    // x: TEXTBORDER_WEIGHT + NAME_TEXT_MARGIN
+    // y: TEXTBORDER_WEIGHT + NAME_TEXT_MARGIN
+    screenInstance.print(EMBER_CHAR_NAME,6,6); // 1 PX MARGIN
 
     // ########################################################################
     // ########################################################################
@@ -801,10 +817,12 @@ void doButtonUpdate(){
   if(digitalRead(BUTTON_PIN_A)==LOW){
     // mouseMode = MOUSEMODE_DRAW;
     displayingCharacter = DISPLAYING_CELAENA;
+    requiresRedraw = true;
   }
   if(digitalRead(BUTTON_PIN_B)==LOW){
     // mouseMode = MOUSEMODE_NONE;
     displayingCharacter = DISPLAYING_EMBER;
+    requiresRedraw = true;
   }
   // if(digitalRead(BUTTON_PIN_A)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
   // if(digitalRead(BUTTON_PIN_B)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
@@ -826,13 +844,16 @@ void loop()
 
   doButtonUpdate();
 
-  doDrawingUpdate();
+  if(requiresRedraw){
+    doDrawingUpdate();
 
-  drawSkillsAndAbilities();
+    drawSkillsAndAbilities();
 
-  drawFontData();
+    // drawFontData();
+    requiresRedraw = false;
+  }
   // rn bc why not
-  // delay(LOOP_SNOOZE_TIME);
+  delay(LOOP_SNOOZE_TIME);
 }
 
 void doDemo(){
