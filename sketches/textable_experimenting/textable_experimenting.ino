@@ -485,15 +485,18 @@ void drawSkillsAndAbilities(){
 
   // BORDERS AROUND THE NAME
   screenInstance.setColor(0x00,0x00,0x00);
-  screenInstance.fillRect(0,0,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,NAME_TEXT_BOX_HEIGHT+1);
+  screenInstance.fillRect(0,0,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,NAME_TEXT_BOX_HEIGHT+1); // NAME BACKGROUND
   screenInstance.setColor(0xff,0xff,0xff);
-  screenInstance.drawLine(0,0,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,0);
   screenInstance.drawLine(0,NAME_TEXT_BOX_HEIGHT+1,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,NAME_TEXT_BOX_HEIGHT+1);
 
-  // BORDERS AROUND THE ABILITIES/SKILLS
+  // BORDERSS AROUND THE WHOLE SCREEN
+  screenInstance.drawLine(0,0,SCREEN_WIDTH,0);
+  screenInstance.drawLine(0,SCREEN_HEIGHT-1,SCREEN_WIDTH,SCREEN_HEIGHT-1);
+  screenInstance.drawLine(0,0,0,SCREEN_HEIGHT);
+  screenInstance.drawLine(SCREEN_WIDTH-1,0,SCREEN_WIDTH-1,SCREEN_HEIGHT);
 
+  // BORDERS AROUND THE ABILITIES/SKILLS
   screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,0,SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,SCREEN_HEIGHT);
-  screenInstance.drawLine(479,0,479,SCREEN_HEIGHT);
 
   screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,0,SCREEN_WIDTH,0);
   screenInstance.drawLine(SKILLSANDABILITIES_TEXT_LEFTBORDER_POS,29,SCREEN_WIDTH,29);
@@ -845,6 +848,8 @@ void loop()
   doButtonUpdate();
 
   if(requiresRedraw){
+    screenInstance.clrScr();
+    
     doDrawingUpdate();
 
     drawSkillsAndAbilities();
