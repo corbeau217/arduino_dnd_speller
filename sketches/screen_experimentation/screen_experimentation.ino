@@ -14,6 +14,8 @@
 
 // #include <cstdint>
 #include <UTFT.h>
+// #include <string>
+// #include <string>
 
 
 
@@ -32,6 +34,8 @@
 
 #define LOOP_SNOOZE_TIME 10
 
+#define TEXT_HEIGHT 12
+
 // screen instance thinger
 //  uses pins for the screen
 UTFT screenInstance(
@@ -47,24 +51,61 @@ static const unsigned SCREEN_WIDTH = 480, SCREEN_HEIGHT = 320;
 
 // mouse positioning
 int mouseX = SCREEN_WIDTH/2, mouseY = SCREEN_HEIGHT/2;
-int prevMouseX = mouseX, prevMouseY = mouseY;
 
 #define MOUSEMODE_NONE 0
 #define MOUSEMODE_DRAW 1
 #define MOUSEMODE_CLEAR 2
 // mouse mode var
 int mouseMode = MOUSEMODE_NONE;
-int mouseModeSetter = MOUSEMODE_DRAW;
 
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
 
+#define ABILITY_COUNT 6
+#define SKILL_COUNT 18
+
+String ABILITY_NAME_LIST[] = {
+  "Strength",
+  "Dexterity",
+  "Constitution",
+  "Intelligence",
+  "Wisdom",
+  "Charisma"
+};
+
+String SKILL_NAME_LIST[] = {
+  "Proficiency Bonus",
+  "Acrobatics",
+  "Animal Handling",
+  "Arcana",
+  "Athletics",
+  "Deception",
+  "History",
+  "Insight",
+  "Intimidation",
+  "Investigation",
+  "Medicine",
+  "Nature",
+  "Perception",
+  "Performance",
+  "Persuasion",
+  "Religion",
+  "Sleight of Hand",
+  "Stealth",
+  "Survival",
+  "Passive Perception"
+};
+
+void setupAbilities(){
+  //...
+}
 
 void fillGrider(){
-  doGrid(&screenInstance,10,10,0,255,65);
-  doGrid(&screenInstance,50,50,50,50,200);
-  doGrid(&screenInstance,100,100,255,0,0);
+  doGrid(&screenInstance,10,10,0,180,30);
+  doGrid(&screenInstance,50,50,25,25,100);
+  doGrid(&screenInstance,100,100,180,0,0);
 }
+
 void setupLCD(){
   // Setup the LCD
   screenInstance.InitLCD();
@@ -125,7 +166,25 @@ void doGrid(UTFT *screenInstance, int xStep, int yStep, unsigned char r, unsigne
   }
 }
 
-
+void drawSkillList(){
+  int i = 0;
+  for(i = 0; i < SKILL_COUNT; i++){
+    // draw the text bits
+    screenInstance.print(SKILL_NAME_LIST[i],RIGHT,i*TEXT_HEIGHT);
+  }
+}
+void drawAbilityList(){
+  int i = 0;
+  // (screenInstance.getFont())
+  // uint8_t* font
+  // screenInstance.getFontXsize()
+  // screenInstance.getFontYsize()
+  
+  for(i = 0; i < ABILITY_COUNT; i++){
+    // draw the text bits
+    screenInstance.print(ABILITY_NAME_LIST[i],LEFT,i*TEXT_HEIGHT);
+  }
+}
 
 
 void doButtonUpdate(){
@@ -137,11 +196,10 @@ void doButtonUpdate(){
 
   // BIGTODO: have a state cycle
   if(digitalRead(BUTTON_PIN_SELECT)==LOW){
-    mouseMode = mouseModeSetter;
+    mouseMode = MOUSEMODE_DRAW;
   }
   if(digitalRead(BUTTON_PIN_CANCEL)==LOW){
-    // mouseModeSetter = (mouseModeSetter==MOUSEMODE_CLEAR)? MOUSEMODE_DRAW : (mouseModeSetter==MOUSEMODE_DRAW)? MOUSEMODE_NONE : MOUSEMODE_CLEAR;
-    mouseModeSetter = (mouseModeSetter==MOUSEMODE_NONE)? MOUSEMODE_DRAW : MOUSEMODE_NONE;
+    mouseMode = MOUSEMODE_NONE;
   }
   // if(digitalRead(BUTTON_PIN_SELECT)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
   // if(digitalRead(BUTTON_PIN_CANCEL)==LOW){ screenInstance.clrScr(); }else{ fillGrider(); }
@@ -153,13 +211,9 @@ void doDrawingUpdate(){
   if(mouseMode==MOUSEMODE_DRAW){
     screenInstance.setColor(200,200,200);
     screenInstance.drawPixel(mouseX,mouseY);
-    // screenInstance.drawLine(mouseX,mouseY,prevMouseX,prevMouseY);
   }
   
 
-  // update the previous positionss
-  prevMouseX = mouseX;
-  prevMouseY = mouseY;
 }
 
 void loop()
@@ -167,39 +221,10 @@ void loop()
 
   doButtonUpdate();
 
-  // if(mouseMode==MOUSEMODE_DRAW){
-    doDrawingUpdate();
-  // }
+  doDrawingUpdate();
 
-  // int xStep = 10;
-  // int yStep = 10;
-  // int widtherr = screenInstance.getDisplayXSize();
-  // int heighter = screenInstance.getDisplayYSize();
-  // // bright green
-  // screenInstance.setColor(0,255,65);
-  // for(int x = xStep-1; x < widtherr; x+=xStep){
-  //   screenInstance.drawLine(x, 0, x, heighter);
-  // }
-
-  // // dark green
-  // screenInstance.setColor(0,143,17);
-  // for(int y = yStep-1; y < heighter; y+=yStep){
-  //   screenInstance.drawLine(0, y, widtherr, y);
-  // }
-
-  // screen is 480x320
-
-
-
-
-
-  // delay(2000);
-
-
-  // scammed
-  // doDemo();
-
-
+  drawSkillList();
+  drawAbilityList();
   // rn bc why not
   delay(LOOP_SNOOZE_TIME);
 }

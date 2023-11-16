@@ -56,5 +56,10 @@
           "icon": "$(close)"
       }
   },
-  "todo-tree.filtering.excludeGlobs": [],
+"todo-tree.filtering.excludeGlobs": [],
+"files.associations": {
+    "*.java": "java",
+    "string": "cpp",
+    "iosfwd": "cpp"
+},
 }

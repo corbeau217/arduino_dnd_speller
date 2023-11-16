@@ -114,10 +114,10 @@ void doDemo(){
   myGLCD.fillRect(0, 306, 479, 319);
   myGLCD.setColor(255, 255, 255);
   myGLCD.setBackColor(255, 0, 0);
-  myGLCD.print("* it's a thiinger thinger *", CENTER, 1);
+  myGLCD.print("* it's a thiinger thinger *", CENTER, 1, 0);
   myGLCD.setBackColor(64, 64, 64);
   myGLCD.setColor(255,255,0);
-  myGLCD.print("why would we have a url here", CENTER, 307);
+  myGLCD.print("why would we have a url here", CENTER, 307, 0);
 
   myGLCD.setColor(0, 0, 255);
   myGLCD.drawRect(0, 14, 479, 305);
