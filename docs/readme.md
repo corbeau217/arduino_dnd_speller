@@ -23,6 +23,8 @@
   * needs to know about the roots to above ratio
   * graph for the nutrients
 
+* need to do the AC/MAX HP/CURR HP/INITIATIVE/SPELLSLOTSS
 
 ##  changes/changelog/updates
 * `[11/11/2023]` --> *copied across files from engg2000 code for starting out*
+* `[16/11/2023]` --> *simple design to display character stats*
